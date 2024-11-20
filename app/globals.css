@@ -5,6 +5,7 @@
 /* :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-noto-serif: "Noto Serif", serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,9 +21,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 } */
 
+.font-noto-serif {
+  font-family: var(--font-noto-serif);
+}
+
 @layer base {
   :root {
-
     --background: 0 0% 100%;
 
     --foreground: 240 10% 3.9%;
@@ -71,8 +75,7 @@ body {
 
     --chart-5: 27 87% 67%;
 
-    --radius: 0.5rem
-  ;
+    --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -88,9 +91,9 @@ body {
 
     --sidebar-border: 220 13% 91%;
 
-    --sidebar-ring: 217.2 91.2% 59.8%}
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
   .dark {
-
     --background: 240 10% 3.9%;
 
     --foreground: 0 0% 98%;
@@ -137,8 +140,7 @@ body {
 
     --chart-4: 280 65% 60%;
 
-    --chart-5: 340 75% 55%
-  ;
+    --chart-5: 340 75% 55%;
 
     --sidebar-background: 240 5.9% 10%;
 
@@ -154,7 +156,8 @@ body {
 
     --sidebar-border: 240 3.7% 15.9%;
 
-    --sidebar-ring: 217.2 91.2% 59.8%}
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
 }
 
 @layer base {

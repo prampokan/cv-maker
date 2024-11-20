@@ -11,6 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { ChevronsUpDown, UserRoundPen, LogOut, LogIn } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
@@ -22,7 +23,7 @@ export default function Navbar() {
     await signInWithPopup(auth, googleAuth);
   };
   return (
-    <nav className="w-full flex justify-center items-center h-20 border-b bg-white fixed">
+    <nav className="w-full flex justify-center items-center h-20 border-b bg-white fixed px-5 2xl:px-0">
       <div className="w-[90rem] flex justify-between items-center">
         <div>
           <h1 className="font-semibold tracking-tight text-zinc-800">LOGO</h1>
@@ -68,10 +69,12 @@ export default function Navbar() {
                 </div>
               </DropdownMenuItem>
               <Separator />
-              <DropdownMenuItem className="m-1.5">
-                <UserRoundPen />
-                <span>Profile</span>
-              </DropdownMenuItem>
+              <Link href={"/user"}>
+                <DropdownMenuItem className="m-1.5">
+                  <UserRoundPen />
+                  <span>My CV✨</span>
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuItem
                 className="m-1.5"
                 onClick={() => auth.signOut()}

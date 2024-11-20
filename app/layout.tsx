@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Noto_Serif } from "next/font/google";
 import "./globals.css";
 import Navbar from "./(components)/navbar";
 
@@ -12,6 +13,12 @@ const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
+});
+
+const notoSerif = Noto_Serif({
+  subsets: ["latin"],
+  weight: ["100", "300", "400", "700", "900"], // Choose weights as needed
+  variable: "--font-noto-serif",
 });
 
 export const metadata: Metadata = {
@@ -27,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased font-[family-name:var(--font-geist-sans)]`}
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSerif.variable} antialiased font-[family-name:var(--font-geist-sans)]`}
       >
         <Navbar />
         {children}
