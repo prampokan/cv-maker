@@ -9,11 +9,30 @@ import { db } from "@/lib/firebase/init";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useParams } from "next/navigation";
 import Template1 from "@/app/(cvTemplates)/template1";
-import { useReactToPrint } from "react-to-print";
-import { CopyPlus, Trash2 } from "lucide-react";
+import {
+  CopyPlus,
+  Trash2,
+  CircleUser,
+  BookText,
+  BriefcaseBusiness,
+  GraduationCap,
+  FileBadge2,
+  Award,
+  Brain,
+  ChevronLeft,
+} from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function Edit() {
   const [name, setName] = useState("");
+  const [jobField, setJobField] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [linkedin, setLinkedin] = useState("");
@@ -58,20 +77,24 @@ export default function Edit() {
     if (docSnap.exists()) {
       const data = docSnap.data();
       setName(data.content.name);
+      setJobField(data.content.jobField);
       setEmail(data.content.email);
       setPhone(data.content.phone);
+      setLinkedin(data.content.linkedin);
+      setWebsite(data.content.website);
+      setAddress(data.content.address);
       setAbout(data.content.about);
       setEducation(data.content.education || [{ name: "", description: "" }]);
       setWorkExperience(
         data.content.workExperience || [{ name: "", description: "" }]
       );
       setRelatedExperience(
-        data.content.workExperience || [{ name: "", description: "" }]
+        data.content.relatedExperience || [{ name: "", description: "" }]
       );
       setCertification(
-        data.content.workExperience || [{ name: "", description: "" }]
+        data.content.certification || [{ name: "", description: "" }]
       );
-      setAward(data.content.workExperience || [{ name: "", description: "" }]);
+      setAward(data.content.award || [{ name: "", description: "" }]);
       setSkills(data.content.skills || [{ name: "", description: "" }]);
     } else {
       console.log("No such document!");
@@ -180,6 +203,7 @@ export default function Edit() {
       await updateDoc(doc(db, "orders", id), {
         content: {
           name: name,
+          jobField: jobField,
           phone: phone,
           email: email,
           linkedin: linkedin,
@@ -195,36 +219,105 @@ export default function Edit() {
         },
         updatedAt: new Date(),
       });
-      handlePrint();
+      DownloadPDF();
     } catch (error) {
       console.error(error);
     }
   };
 
-  const contentRef = useRef<HTMLDivElement>(null);
+  const DownloadPDF = async () => {
+    const html2pdf = await require("html2pdf.js");
+    const element = document.querySelector("#doc");
+    html2pdf(element);
+  };
 
-  const handlePrint = useReactToPrint({
-    content: () => contentRef.current,
-  });
+  const FormProgress = [
+    {
+      id: 1,
+      name: "Personal Information",
+      icon: <CircleUser size={16} />,
+    },
+    {
+      id: 2,
+      name: "Education",
+      icon: <GraduationCap size={16} />,
+    },
+    {
+      id: 3,
+      name: "Work Experience",
+      icon: <BriefcaseBusiness size={16} />,
+    },
+    {
+      id: 4,
+      name: "Related Experience",
+      icon: <BookText size={16} />,
+    },
+    {
+      id: 5,
+      name: "Certification",
+      icon: <FileBadge2 size={16} />,
+    },
+    {
+      id: 6,
+      name: "Award",
+      icon: <Award size={16} />,
+    },
+    {
+      id: 7,
+      name: "Skills",
+      icon: <Brain size={16} />,
+    },
+  ];
 
   return (
     <div className="flex w-full justify-center py-24 px-5 2xl:px-0">
-      <div className="grid grid-cols-2 gap-8 w-[90rem]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-[90rem]">
         <div>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/user">Dashboard</BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <div className="grid grid-cols-7 mb-5 mt-7">
+            {FormProgress.map((item) => (
+              <div
+                key={item.id}
+                className={`${
+                  step >= item.id
+                    ? "border-blue-500 text-blue-500"
+                    : "text-zinc-500"
+                } text-center border-b-2 pb-2 text-xs font-medium flex items-center flex-col gap-1`}
+              >
+                {item.icon}
+                <span className="hidden sm:block">{item.name}</span>
+              </div>
+            ))}
+          </div>
           {step === 1 && (
             <form>
               <Label>Full Name</Label>
               <Input
                 type="text"
-                placeholder="ex: Pramudya Diagusta"
+                placeholder="Pramudya Diagusta"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                className="mb-3 mt-1"
+              />
+              <Label>Job Field</Label>
+              <Input
+                type="text"
+                placeholder="Software Engineer"
+                value={jobField}
+                onChange={(e) => setJobField(e.target.value)}
                 className="mb-3 mt-1"
               />
               <Label>Phone</Label>
               <Input
                 type="text"
-                placeholder="ex: 081234567890"
+                placeholder="081234567890"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className="mb-3 mt-1"
@@ -232,7 +325,7 @@ export default function Edit() {
               <Label>Email</Label>
               <Input
                 type="email"
-                placeholder="ex: pramudya@email.com"
+                placeholder="prampokan@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="mb-3 mt-1"
@@ -240,7 +333,7 @@ export default function Edit() {
               <Label>Linkedin</Label>
               <Input
                 type="text"
-                placeholder="ex: linkedin.com/pramudyadiagusta"
+                placeholder="linkedin.com/pramudyadiagusta"
                 value={linkedin}
                 onChange={(e) => setLinkedin(e.target.value)}
                 className="mb-3 mt-1"
@@ -248,21 +341,21 @@ export default function Edit() {
               <Label>Website</Label>
               <Input
                 type="text"
-                placeholder="ex: www.prampokan.com"
+                placeholder="www.prampokan.com"
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
                 className="mb-3 mt-1"
               />
               <Label>Address</Label>
               <Textarea
-                placeholder="contoh: Semarang, Indonesia."
+                placeholder="Semarang, Indonesia."
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="mb-3 mt-1"
               />
               <Label>About</Label>
               <Textarea
-                placeholder="contoh: I am a passionate developer..."
+                placeholder="I am a passionate developer..."
                 value={about}
                 onChange={(e) => setAbout(e.target.value)}
                 className="mb-3 mt-1"
@@ -651,11 +744,13 @@ export default function Edit() {
           </div>
         </div>
 
-        {/* Document Preview */}
+        {/* CV Preview */}
         <div className="overflow-auto w-full h-[63rem] border rounded shadow-xl">
-          <div ref={contentRef} className="font-noto">
+          <div className="w-[45rem] h-[63rem]">
             <Template1
+              id="doc"
               name={name}
+              jobField={jobField}
               phone={phone}
               email={email}
               linkedin={linkedin}

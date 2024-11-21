@@ -30,6 +30,7 @@ export default function ChooseTemplates() {
         templateName: templateName,
         content: {
           name: "",
+          jobField: "",
           phone: "",
           email: "",
           linkedin: "",

@@ -26,7 +26,9 @@ export default function Navbar() {
     <nav className="w-full flex justify-center items-center h-20 border-b bg-white fixed px-5 2xl:px-0">
       <div className="w-[90rem] flex justify-between items-center">
         <div>
-          <h1 className="font-semibold tracking-tight text-zinc-800">LOGO</h1>
+          <h1 className="font-semibold tracking-tight text-zinc-800">
+            cv maker indo.
+          </h1>
         </div>
         {user ? (
           <DropdownMenu>
