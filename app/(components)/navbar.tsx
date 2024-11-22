@@ -9,7 +9,13 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { ChevronsUpDown, UserRoundPen, LogOut, LogIn } from "lucide-react";
+import {
+  ChevronsUpDown,
+  UserRoundPen,
+  LogOut,
+  LogIn,
+  FileUser,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -23,10 +29,10 @@ export default function Navbar() {
     await signInWithPopup(auth, googleAuth);
   };
   return (
-    <nav className="w-full flex justify-center items-center h-20 border-b bg-white fixed px-5 2xl:px-0">
+    <nav className="w-full flex justify-center items-center h-20 border-b bg-white/70 backdrop-blur fixed px-5 2xl:px-0 z-50">
       <div className="w-[90rem] flex justify-between items-center">
         <div>
-          <h1 className="font-semibold tracking-tight text-zinc-800">
+          <h1 className="font-semibold tracking-tight text-zinc-800 flex gap-2">
             cv maker indo.
           </h1>
         </div>

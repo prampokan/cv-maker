@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Noto_Serif } from "next/font/google";
 import "./globals.css";
 import Navbar from "./(components)/navbar";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -17,7 +18,7 @@ const geistMono = localFont({
 
 const notoSerif = Noto_Serif({
   subsets: ["latin"],
-  weight: ["100", "300", "400", "700", "900"], // Choose weights as needed
+  weight: ["100", "300", "400", "700", "900"],
   variable: "--font-noto-serif",
 });
 
@@ -38,6 +39,7 @@ export default function RootLayout({
       >
         <Navbar />
         {children}
+        <Toaster />
       </body>
     </html>
   );

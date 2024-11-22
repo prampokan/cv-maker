@@ -20,6 +20,7 @@ import {
   Award,
   Brain,
   ChevronLeft,
+  Pen,
 } from "lucide-react";
 import {
   Breadcrumb,
@@ -29,8 +30,21 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/hooks/use-toast";
 
 export default function Edit() {
+  const [templateName, setTemplateName] = useState("");
   const [name, setName] = useState("");
   const [jobField, setJobField] = useState("");
   const [phone, setPhone] = useState("");
@@ -56,6 +70,8 @@ export default function Edit() {
   const params = useParams();
   const id = params?.id as string;
   const [step, setStep] = useState(1);
+  const [preview, setPreview] = useState("preview");
+  const { toast } = useToast();
 
   const nextStep = () => {
     setStep((prevStep) => Math.min(prevStep + 1, 7));
@@ -76,6 +92,7 @@ export default function Edit() {
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const data = docSnap.data();
+      setTemplateName(data.templateName);
       setName(data.content.name);
       setJobField(data.content.jobField);
       setEmail(data.content.email);
@@ -100,6 +117,8 @@ export default function Edit() {
       console.log("No such document!");
     }
   };
+
+  console.log(templateName);
 
   const handleFormChange = (
     index: any,
@@ -201,6 +220,7 @@ export default function Edit() {
     e.preventDefault();
     try {
       await updateDoc(doc(db, "orders", id), {
+        templateName: templateName,
         content: {
           name: name,
           jobField: jobField,
@@ -219,9 +239,13 @@ export default function Edit() {
         },
         updatedAt: new Date(),
       });
-      DownloadPDF();
     } catch (error) {
       console.error(error);
+    } finally {
+      toast({
+        title: "CV Saved Successfully",
+        description: "You can continue edit it later.",
+      });
     }
   };
 
@@ -277,7 +301,7 @@ export default function Edit() {
             <BreadcrumbList>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/user">Dashboard</BreadcrumbLink>
+                <BreadcrumbLink href="/user">Home</BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -738,32 +762,92 @@ export default function Edit() {
               <Button onClick={nextStep}>Next</Button>
             ) : (
               <>
-                <Button onClick={updateOrder}>Save CV!</Button>
+                <Button
+                  onClick={async (e) => {
+                    await updateOrder(e); // Wait for updateOrder to complete if it returns a Promise
+                    DownloadPDF(); // Then call DownloadPDF
+                  }}
+                >
+                  Save CV!
+                </Button>
               </>
             )}
           </div>
         </div>
 
         {/* CV Preview */}
-        <div className="overflow-auto w-full h-[63rem] border rounded shadow-xl">
-          <div className="w-[45rem] h-[63rem]">
-            <Template1
-              id="doc"
-              name={name}
-              jobField={jobField}
-              phone={phone}
-              email={email}
-              linkedin={linkedin}
-              website={website}
-              address={address}
-              about={about}
-              education={education}
-              workExperience={workExperience}
-              relatedExperience={relatedExperience}
-              certification={certification}
-              award={award}
-              skills={skills}
-            />
+        <div>
+          <div className="mb-5 mt-11 flex justify-between">
+            <div>
+              <Button
+                className="rounded-r-none"
+                variant={preview == "preview" ? "secondary" : "ghost"}
+                onClick={() => setPreview("preview")}
+              >
+                Preview
+              </Button>
+              <Button
+                className="rounded-l-none"
+                variant={preview == "example" ? "secondary" : "ghost"}
+                onClick={() => setPreview("example")}
+              >
+                Example
+              </Button>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline">
+                  <Pen />
+                  {templateName}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Edit Template Name.</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    <Label>Template Name</Label>
+                    <Input
+                      type="text"
+                      placeholder="Template 1"
+                      value={templateName}
+                      onChange={(e) => setTemplateName(e.target.value)}
+                      className="mt-1"
+                    />
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Close</AlertDialogCancel>
+                  <AlertDialogAction onClick={updateOrder}>
+                    Done
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+          <div className="overflow-auto w-full h-[63rem] border rounded shadow-xl">
+            <div className="w-[45rem] h-[63rem]">
+              {preview === "preview" ? (
+                <Template1
+                  id="doc"
+                  name={name}
+                  jobField={jobField}
+                  phone={phone}
+                  email={email}
+                  linkedin={linkedin}
+                  website={website}
+                  address={address}
+                  about={about}
+                  education={education}
+                  workExperience={workExperience}
+                  relatedExperience={relatedExperience}
+                  certification={certification}
+                  award={award}
+                  skills={skills}
+                />
+              ) : (
+                "Example"
+              )}
+            </div>
           </div>
         </div>
       </div>
