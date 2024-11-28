@@ -1,12 +1,13 @@
 "use client";
 
+import * as React from "react";
 import { useState, useEffect, FormEvent, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { db } from "@/lib/firebase/init";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase/init";
+import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { useParams } from "next/navigation";
 import Template1 from "@/app/(cvTemplates)/template1";
 import {
@@ -21,6 +22,7 @@ import {
   Brain,
   ChevronLeft,
   Pen,
+  Download,
 } from "lucide-react";
 import {
   Breadcrumb,
@@ -41,9 +43,22 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
 import { useToast } from "@/components/hooks/use-toast";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useRouter } from "next/navigation";
 
 export default function Edit() {
+  const [user, loading, error] = useAuthState(auth);
   const [templateName, setTemplateName] = useState("");
   const [name, setName] = useState("");
   const [jobField, setJobField] = useState("");
@@ -54,24 +69,49 @@ export default function Edit() {
   const [address, setAddress] = useState("");
   const [about, setAbout] = useState("");
   const [education, setEducation] = useState<any>([
-    { name: "", description: "" },
+    {
+      university: "",
+      degree: "",
+      location: "",
+      gpa: "",
+      start: "",
+      end: "",
+      description: "",
+    },
   ]);
-  const [skills, setSkills] = useState<any>([{ name: "", description: "" }]);
+  const [skills, setSkills] = useState<any>([{ skill: "", detail: "" }]);
   const [workExperience, setWorkExperience] = useState<any>([
-    { name: "", description: "" },
+    {
+      company: "",
+      jobField: "",
+      location: "",
+      start: "",
+      end: "",
+      description: "",
+    },
   ]);
   const [relatedExperience, setRelatedExperience] = useState<any>([
-    { name: "", description: "" },
+    {
+      company: "",
+      field: "",
+      location: "",
+      start: "",
+      end: "",
+      description: "",
+    },
   ]);
   const [certification, setCertification] = useState<any>([
-    { name: "", description: "" },
+    { certificate: "" },
   ]);
-  const [award, setAward] = useState<any>([{ name: "", description: "" }]);
+  const [award, setAward] = useState<any>([{ award: "" }]);
   const params = useParams();
   const id = params?.id as string;
   const [step, setStep] = useState(1);
   const [preview, setPreview] = useState("preview");
   const { toast } = useToast();
+  const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [date, setDate] = React.useState<Date>();
 
   const nextStep = () => {
     setStep((prevStep) => Math.min(prevStep + 1, 7));
@@ -83,6 +123,7 @@ export default function Edit() {
 
   useEffect(() => {
     if (id) {
+      setIsModalOpen(true);
       getOrder(id);
     }
   }, [id]);
@@ -101,18 +142,46 @@ export default function Edit() {
       setWebsite(data.content.website);
       setAddress(data.content.address);
       setAbout(data.content.about);
-      setEducation(data.content.education || [{ name: "", description: "" }]);
+      setEducation(
+        data.content.education || [
+          {
+            university: "",
+            degree: "",
+            location: "",
+            gpa: "",
+            start: "",
+            end: "",
+            description: "",
+          },
+        ]
+      );
       setWorkExperience(
-        data.content.workExperience || [{ name: "", description: "" }]
+        data.content.workExperience || [
+          {
+            company: "",
+            jobField: "",
+            location: "",
+            start: "",
+            end: "",
+            description: "",
+          },
+        ]
       );
       setRelatedExperience(
-        data.content.relatedExperience || [{ name: "", description: "" }]
+        data.content.relatedExperience || [
+          {
+            company: "",
+            field: "",
+            location: "",
+            start: "",
+            end: "",
+            description: "",
+          },
+        ]
       );
-      setCertification(
-        data.content.certification || [{ name: "", description: "" }]
-      );
-      setAward(data.content.award || [{ name: "", description: "" }]);
-      setSkills(data.content.skills || [{ name: "", description: "" }]);
+      setCertification(data.content.certification || [{ certificate: "" }]);
+      setAward(data.content.award || [{ award: "" }]);
+      setSkills(data.content.skills || [{ skill: "", detail: "" }]);
     } else {
       console.log("No such document!");
     }
@@ -161,25 +230,53 @@ export default function Edit() {
   const addMultiField = (e: FormEvent, formField: string) => {
     e.preventDefault();
     if (formField === "education") {
-      setEducation([...education, { name: "", description: "" }]);
+      setEducation([
+        ...education,
+        {
+          university: "",
+          degree: "",
+          location: "",
+          gpa: "",
+          start: "",
+          end: "",
+          description: "",
+        },
+      ]);
     }
     if (formField === "work-experience") {
-      setWorkExperience([...workExperience, { name: "", description: "" }]);
+      setWorkExperience([
+        ...workExperience,
+        {
+          company: "",
+          jobField: "",
+          location: "",
+          start: "",
+          end: "",
+          description: "",
+        },
+      ]);
     }
     if (formField === "related-experience") {
       setRelatedExperience([
         ...relatedExperience,
-        { name: "", description: "" },
+        {
+          company: "",
+          field: "",
+          location: "",
+          start: "",
+          end: "",
+          description: "",
+        },
       ]);
     }
     if (formField === "certification") {
-      setCertification([...certification, { name: "", description: "" }]);
+      setCertification([...certification, { certificate: "" }]);
     }
     if (formField === "award") {
-      setAward([...award, { name: "", description: "" }]);
+      setAward([...award, { award: "" }]);
     }
     if (formField === "skills") {
-      setSkills([...skills, { name: "", description: "" }]);
+      setSkills([...skills, { skill: "", detail: "" }]);
     }
   };
 
@@ -242,6 +339,7 @@ export default function Edit() {
     } catch (error) {
       console.error(error);
     } finally {
+      setIsModalOpen(false);
       toast({
         title: "CV Saved Successfully",
         description: "You can continue edit it later.",
@@ -253,6 +351,19 @@ export default function Edit() {
     const html2pdf = await require("html2pdf.js");
     const element = document.querySelector("#doc");
     html2pdf(element);
+  };
+
+  const deleteOrder = async () => {
+    try {
+      await deleteDoc(doc(db, "orders", id));
+      toast({
+        title: "CV Deleted",
+        description: "CV Deleted Successfully",
+      });
+      router.push("/user");
+    } catch (error) {
+      console.error("error :", error);
+    }
   };
 
   const FormProgress = [
@@ -398,18 +509,131 @@ export default function Edit() {
                   >
                     <Input
                       type="text"
-                      placeholder="contoh: Universitas Indonesia"
-                      value={item.name}
+                      placeholder="Universitas Diponegoro"
+                      value={item.university}
                       onChange={(e) =>
                         handleFormChange(
                           index,
-                          "name",
+                          "university",
                           e.target.value,
                           "education"
                         )
                       }
                       className="mb-3 mt-1"
                     />
+                    <Input
+                      type="text"
+                      placeholder="Computer Engineering"
+                      value={item.degree}
+                      onChange={(e) =>
+                        handleFormChange(
+                          index,
+                          "degree",
+                          e.target.value,
+                          "education"
+                        )
+                      }
+                      className="mb-3 mt-1"
+                    />
+                    <Input
+                      type="text"
+                      placeholder="3.57"
+                      value={item.gpa}
+                      onChange={(e) =>
+                        handleFormChange(
+                          index,
+                          "gpa",
+                          e.target.value,
+                          "education"
+                        )
+                      }
+                      className="mb-3 mt-1"
+                    />
+                    <Input
+                      type="text"
+                      placeholder="Semarang, Indonesia"
+                      value={item.location}
+                      onChange={(e) =>
+                        handleFormChange(
+                          index,
+                          "location",
+                          e.target.value,
+                          "education"
+                        )
+                      }
+                      className="mb-3 mt-1"
+                    />
+                    {/* Date Picker for Start Date */}
+                    <Popover>
+                      <PopoverTrigger asChild className="mb-3 mt-1">
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[280px] justify-start text-left font-normal",
+                            !item.start && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon />
+                          {item.start ? (
+                            format(new Date(item.start), "PPP")
+                          ) : (
+                            <span>Pick a Start Date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={
+                            item.start ? new Date(item.start) : undefined
+                          }
+                          onSelect={(date) =>
+                            handleFormChange(
+                              index,
+                              "start",
+                              date?.toISOString() || "",
+                              "education"
+                            )
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+
+                    {/* Date Picker for End Date */}
+                    <Popover>
+                      <PopoverTrigger asChild className="mb-3 mt-1">
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[280px] justify-start text-left font-normal",
+                            !item.end && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon />
+                          {item.end ? (
+                            format(new Date(item.end), "PPP")
+                          ) : (
+                            <span>Pick an End Date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={item.end ? new Date(item.end) : undefined}
+                          onSelect={(date) =>
+                            handleFormChange(
+                              index,
+                              "end",
+                              date?.toISOString() || "",
+                              "education"
+                            )
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
                     <Textarea
                       placeholder="contoh: In Universitas Indonesia what do I do..."
                       value={item.description}
@@ -777,24 +1001,24 @@ export default function Edit() {
 
         {/* CV Preview */}
         <div>
-          <div className="mb-5 mt-11 flex justify-between">
+          <div className="mb-5 mt-11 flex flex-col sm:flex-row justify-between gap-2">
             <div>
               <Button
-                className="rounded-r-none"
+                className="xl:rounded-r-none"
                 variant={preview == "preview" ? "secondary" : "ghost"}
                 onClick={() => setPreview("preview")}
               >
                 Preview
               </Button>
               <Button
-                className="rounded-l-none"
+                className="xl:rounded-l-none"
                 variant={preview == "example" ? "secondary" : "ghost"}
                 onClick={() => setPreview("example")}
               >
                 Example
               </Button>
             </div>
-            <AlertDialog>
+            <AlertDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
               <AlertDialogTrigger asChild>
                 <Button variant="outline">
                   <Pen />
@@ -803,15 +1027,15 @@ export default function Edit() {
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Edit Template Name.</AlertDialogTitle>
+                  <AlertDialogTitle>Edit CV Name.</AlertDialogTitle>
                   <AlertDialogDescription>
-                    <Label>Template Name</Label>
+                    <Label>CV Name</Label>
                     <Input
                       type="text"
                       placeholder="Template 1"
                       value={templateName}
                       onChange={(e) => setTemplateName(e.target.value)}
-                      className="mt-1"
+                      className="mt-2"
                     />
                   </AlertDialogDescription>
                 </AlertDialogHeader>
@@ -823,6 +1047,33 @@ export default function Edit() {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+            <div className="flex gap-2">
+              <Button onClick={DownloadPDF} className="w-full">
+                <Download />
+                Download PDF
+              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline">
+                    <Trash2 />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete CV</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure to delete your CV?
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={deleteOrder}>
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </div>
           <div className="overflow-auto w-full h-[63rem] border rounded shadow-xl">
             <div className="w-[45rem] h-[63rem]">

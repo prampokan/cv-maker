@@ -20,20 +20,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [user, loading, error] = useAuthState(auth);
   const googleAuth = new GoogleAuthProvider();
+  const router = useRouter();
 
   const SignIn = async () => {
-    await signInWithPopup(auth, googleAuth);
+    const userCredential = await signInWithPopup(auth, googleAuth);
+    const user = userCredential.user;
+    const token = await user.getIdToken();
+    document.cookie = `token=${token}; path=/; secure; samesite=strict`;
+    router.push("/user");
   };
   return (
     <nav className="w-full flex justify-center items-center h-20 border-b bg-white/70 backdrop-blur fixed px-5 2xl:px-0 z-50">
       <div className="w-[90rem] flex justify-between items-center">
         <div>
           <h1 className="font-semibold tracking-tight text-zinc-800 flex gap-2">
-            cv maker indo.
+            cvmakerindo.com
           </h1>
         </div>
         {user ? (
@@ -85,7 +91,19 @@ export default function Navbar() {
               </Link>
               <DropdownMenuItem
                 className="m-1.5"
-                onClick={() => auth.signOut()}
+                onClick={() => {
+                  auth
+                    .signOut()
+                    .then(() => {
+                      document.cookie =
+                        "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; samesite=strict";
+                      console.log("User signed out and token cookie cleared");
+                      router.push("/");
+                    })
+                    .catch((error) => {
+                      console.error("Error signing out:", error);
+                    });
+                }}
               >
                 <LogOut />
                 <span>Sign Out</span>
