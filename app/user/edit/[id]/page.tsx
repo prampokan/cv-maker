@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import { db, auth } from "@/lib/firebase/init";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { useParams } from "next/navigation";
@@ -502,11 +503,21 @@ export default function Edit() {
             <form>
               {education.map((item: any, index: any) => (
                 <>
-                  <Label>Education {index + 1}</Label>
-                  <div
-                    key={index}
-                    className="bg-zinc-100 border rounded p-2 mb-5 mt-1"
-                  >
+                  <div className="flex justify-between items-center">
+                    <Label className="font-bold">Education {index + 1}</Label>
+                    {education.length > 1 && (
+                      <Button
+                        onClick={() => removeMultiField(index, "education")}
+                        className="h-8 gap-1 text-zinc-500 hover:text-red-500"
+                        variant="ghost"
+                      >
+                        <Trash2 />
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                  <div key={index} className="mb-5 mt-4">
+                    <Label>University</Label>
                     <Input
                       type="text"
                       placeholder="Universitas Diponegoro"
@@ -521,6 +532,7 @@ export default function Edit() {
                       }
                       className="mb-3 mt-1"
                     />
+                    <Label>Degree</Label>
                     <Input
                       type="text"
                       placeholder="Computer Engineering"
@@ -535,6 +547,7 @@ export default function Edit() {
                       }
                       className="mb-3 mt-1"
                     />
+                    <Label>GPA</Label>
                     <Input
                       type="text"
                       placeholder="3.57"
@@ -549,6 +562,7 @@ export default function Edit() {
                       }
                       className="mb-3 mt-1"
                     />
+                    <Label>University Location</Label>
                     <Input
                       type="text"
                       placeholder="Semarang, Indonesia"
@@ -563,77 +577,88 @@ export default function Edit() {
                       }
                       className="mb-3 mt-1"
                     />
-                    {/* Date Picker for Start Date */}
-                    <Popover>
-                      <PopoverTrigger asChild className="mb-3 mt-1">
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[280px] justify-start text-left font-normal",
-                            !item.start && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon />
-                          {item.start ? (
-                            format(new Date(item.start), "PPP")
-                          ) : (
-                            <span>Pick a Start Date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={
-                            item.start ? new Date(item.start) : undefined
-                          }
-                          onSelect={(date) =>
-                            handleFormChange(
-                              index,
-                              "start",
-                              date?.toISOString() || "",
-                              "education"
-                            )
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <div className="flex gap-2">
+                      {/* Date Picker for Start Date */}
+                      <div className="flex flex-col">
+                        <Label>From</Label>
+                        <Popover>
+                          <PopoverTrigger asChild className="mb-3 mt-1">
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[280px] justify-start text-left font-normal",
+                                !item.start && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon />
+                              {item.start ? (
+                                format(new Date(item.start), "PPP")
+                              ) : (
+                                <span>Pick a Start Date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={
+                                item.start ? new Date(item.start) : undefined
+                              }
+                              onSelect={(date) =>
+                                handleFormChange(
+                                  index,
+                                  "start",
+                                  date?.toISOString() || "",
+                                  "education"
+                                )
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
 
-                    {/* Date Picker for End Date */}
-                    <Popover>
-                      <PopoverTrigger asChild className="mb-3 mt-1">
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[280px] justify-start text-left font-normal",
-                            !item.end && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon />
-                          {item.end ? (
-                            format(new Date(item.end), "PPP")
-                          ) : (
-                            <span>Pick an End Date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={item.end ? new Date(item.end) : undefined}
-                          onSelect={(date) =>
-                            handleFormChange(
-                              index,
-                              "end",
-                              date?.toISOString() || "",
-                              "education"
-                            )
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                      {/* Date Picker for End Date */}
+                      <div className="flex flex-col">
+                        <Label>To</Label>
+                        <Popover>
+                          <PopoverTrigger asChild className="mb-3 mt-1">
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[280px] justify-start text-left font-normal",
+                                !item.end && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon />
+                              {item.end ? (
+                                format(new Date(item.end), "PPP")
+                              ) : (
+                                <span>Pick an End Date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={
+                                item.end ? new Date(item.end) : undefined
+                              }
+                              onSelect={(date) =>
+                                handleFormChange(
+                                  index,
+                                  "end",
+                                  date?.toISOString() || "",
+                                  "education"
+                                )
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </div>
+                    <Label>Description</Label>
                     <Textarea
                       placeholder="contoh: In Universitas Indonesia what do I do..."
                       value={item.description}
@@ -646,7 +671,7 @@ export default function Edit() {
                         )
                       }
                     />
-                    {education.length > 1 && (
+                    {/* {education.length > 1 && (
                       <div className="w-full flex justify-end">
                         <Button
                           onClick={() => removeMultiField(index, "education")}
@@ -657,7 +682,7 @@ export default function Edit() {
                           Remove
                         </Button>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </>
               ))}
@@ -676,27 +701,153 @@ export default function Edit() {
             <form>
               {workExperience.map((item: any, index: any) => (
                 <>
-                  <Label>Work Experience {index + 1}</Label>
-                  <div
-                    key={index}
-                    className="bg-zinc-100 border rounded p-2 mb-5 mt-1"
-                  >
+                  <div className="flex justify-between items-center">
+                    <Label className="font-bold">
+                      Work Experience {index + 1}
+                    </Label>
+                    {workExperience.length > 1 && (
+                      <Button
+                        onClick={() =>
+                          removeMultiField(index, "work-experience")
+                        }
+                        className="h-8 gap-1 text-zinc-500 hover:text-red-500"
+                        variant="ghost"
+                      >
+                        <Trash2 />
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                  <div key={index} className="mb-5 mt-4">
+                    <Label>Company</Label>
                     <Input
                       type="text"
-                      placeholder="contoh: Netflix"
-                      value={item.name}
+                      placeholder="Telkom Indonesia"
+                      value={item.company}
                       onChange={(e) =>
                         handleFormChange(
                           index,
-                          "name",
+                          "company",
                           e.target.value,
                           "work-experience"
                         )
                       }
                       className="mb-3 mt-1"
                     />
+                    <Label>Job Field</Label>
+                    <Input
+                      type="text"
+                      placeholder="Software Engineer"
+                      value={item.jobField}
+                      onChange={(e) =>
+                        handleFormChange(
+                          index,
+                          "jobField",
+                          e.target.value,
+                          "work-experience"
+                        )
+                      }
+                      className="mb-3 mt-1"
+                    />
+                    <Label>Company Location</Label>
+                    <Input
+                      type="text"
+                      placeholder="Semarang, Indonesia"
+                      value={item.location}
+                      onChange={(e) =>
+                        handleFormChange(
+                          index,
+                          "location",
+                          e.target.value,
+                          "work-experience"
+                        )
+                      }
+                      className="mb-3 mt-1"
+                    />
+                    <div className="flex gap-2">
+                      {/* Date Picker for Start Date */}
+                      <div className="flex flex-col">
+                        <Label>From</Label>
+                        <Popover>
+                          <PopoverTrigger asChild className="mb-3 mt-1">
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[280px] justify-start text-left font-normal",
+                                !item.start && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon />
+                              {item.start ? (
+                                format(new Date(item.start), "PPP")
+                              ) : (
+                                <span>Pick a Start Date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={
+                                item.start ? new Date(item.start) : undefined
+                              }
+                              onSelect={(date) =>
+                                handleFormChange(
+                                  index,
+                                  "start",
+                                  date?.toISOString() || "",
+                                  "work-experience"
+                                )
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+
+                      {/* Date Picker for End Date */}
+                      <div className="flex flex-col">
+                        <Label>To</Label>
+                        <Popover>
+                          <PopoverTrigger asChild className="mb-3 mt-1">
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[280px] justify-start text-left font-normal",
+                                !item.end && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon />
+                              {item.end ? (
+                                format(new Date(item.end), "PPP")
+                              ) : (
+                                <span>Pick an End Date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={
+                                item.end ? new Date(item.end) : undefined
+                              }
+                              onSelect={(date) =>
+                                handleFormChange(
+                                  index,
+                                  "end",
+                                  date?.toISOString() || "",
+                                  "work-experience"
+                                )
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </div>
+                    <Label>Description</Label>
                     <Textarea
-                      placeholder="contoh: Frontend Next js React js..."
+                      placeholder="In Telkom Indonesia I..."
                       value={item.description}
                       onChange={(e) =>
                         handleFormChange(
@@ -707,20 +858,18 @@ export default function Edit() {
                         )
                       }
                     />
-                    {workExperience.length > 1 && (
-                      <div className="w-full flex justify-end">
-                        <Button
-                          onClick={() =>
-                            removeMultiField(index, "work-experience")
-                          }
-                          className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
-                          variant="ghost"
-                        >
-                          <Trash2 />
-                          Remove
-                        </Button>
-                      </div>
-                    )}
+                    {/* {education.length > 1 && (
+                    <div className="w-full flex justify-end">
+                      <Button
+                        onClick={() => removeMultiField(index, "education")}
+                        className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
+                        variant="ghost"
+                      >
+                        <Trash2 />
+                        Remove
+                      </Button>
+                    </div>
+                  )} */}
                   </div>
                 </>
               ))}
@@ -739,27 +888,153 @@ export default function Edit() {
             <form>
               {relatedExperience.map((item: any, index: any) => (
                 <>
-                  <Label>Related Experience {index + 1}</Label>
-                  <div
-                    key={index}
-                    className="bg-zinc-100 border rounded p-2 mb-5 mt-1"
-                  >
+                  <div className="flex justify-between items-center">
+                    <Label className="font-bold">
+                      Related Experience {index + 1}
+                    </Label>
+                    {relatedExperience.length > 1 && (
+                      <Button
+                        onClick={() =>
+                          removeMultiField(index, "related-experience")
+                        }
+                        className="h-8 gap-1 text-zinc-500 hover:text-red-500"
+                        variant="ghost"
+                      >
+                        <Trash2 />
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                  <div key={index} className="mb-5 mt-4">
+                    <Label>Company</Label>
                     <Input
                       type="text"
-                      placeholder="contoh: Web Developing"
-                      value={item.name}
+                      placeholder="Bangkit Academy"
+                      value={item.company}
                       onChange={(e) =>
                         handleFormChange(
                           index,
-                          "name",
+                          "company",
                           e.target.value,
                           "related-experience"
                         )
                       }
                       className="mb-3 mt-1"
                     />
+                    <Label>Field</Label>
+                    <Input
+                      type="text"
+                      placeholder="Cloud Computing"
+                      value={item.field}
+                      onChange={(e) =>
+                        handleFormChange(
+                          index,
+                          "field",
+                          e.target.value,
+                          "related-experience"
+                        )
+                      }
+                      className="mb-3 mt-1"
+                    />
+                    <Label>Company Location</Label>
+                    <Input
+                      type="text"
+                      placeholder="Semarang, Indonesia"
+                      value={item.location}
+                      onChange={(e) =>
+                        handleFormChange(
+                          index,
+                          "location",
+                          e.target.value,
+                          "related-experience"
+                        )
+                      }
+                      className="mb-3 mt-1"
+                    />
+                    <div className="flex gap-2">
+                      {/* Date Picker for Start Date */}
+                      <div className="flex flex-col">
+                        <Label>From</Label>
+                        <Popover>
+                          <PopoverTrigger asChild className="mb-3 mt-1">
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[280px] justify-start text-left font-normal",
+                                !item.start && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon />
+                              {item.start ? (
+                                format(new Date(item.start), "PPP")
+                              ) : (
+                                <span>Pick a Start Date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={
+                                item.start ? new Date(item.start) : undefined
+                              }
+                              onSelect={(date) =>
+                                handleFormChange(
+                                  index,
+                                  "start",
+                                  date?.toISOString() || "",
+                                  "related-experience"
+                                )
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+
+                      {/* Date Picker for End Date */}
+                      <div className="flex flex-col">
+                        <Label>To</Label>
+                        <Popover>
+                          <PopoverTrigger asChild className="mb-3 mt-1">
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[280px] justify-start text-left font-normal",
+                                !item.end && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon />
+                              {item.end ? (
+                                format(new Date(item.end), "PPP")
+                              ) : (
+                                <span>Pick an End Date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={
+                                item.end ? new Date(item.end) : undefined
+                              }
+                              onSelect={(date) =>
+                                handleFormChange(
+                                  index,
+                                  "end",
+                                  date?.toISOString() || "",
+                                  "related-experience"
+                                )
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </div>
+                    <Label>Description</Label>
                     <Textarea
-                      placeholder="contoh: Frontend Next js React js..."
+                      placeholder="In Bangkit Academy Indonesia I..."
                       value={item.description}
                       onChange={(e) =>
                         handleFormChange(
@@ -770,18 +1045,18 @@ export default function Edit() {
                         )
                       }
                     />
-                    {relatedExperience.length > 1 && (
-                      <div className="w-full flex justify-end">
-                        <Button
-                          onClick={() => removeMultiField(index, "skills")}
-                          className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
-                          variant="ghost"
-                        >
-                          <Trash2 />
-                          Remove
-                        </Button>
-                      </div>
-                    )}
+                    {/* {education.length > 1 && (
+                  <div className="w-full flex justify-end">
+                    <Button
+                      onClick={() => removeMultiField(index, "education")}
+                      className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
+                      variant="ghost"
+                    >
+                      <Trash2 />
+                      Remove
+                    </Button>
+                  </div>
+                )} */}
                   </div>
                 </>
               ))}
@@ -800,51 +1075,49 @@ export default function Edit() {
             <form>
               {certification.map((item: any, index: any) => (
                 <>
-                  <Label>Certification {index + 1}</Label>
-                  <div
-                    key={index}
-                    className="bg-zinc-100 border rounded p-2 mb-5 mt-1"
-                  >
+                  <div className="flex justify-between items-center">
+                    <Label className="font-bold">
+                      Certification {index + 1}
+                    </Label>
+                    {certification.length > 1 && (
+                      <Button
+                        onClick={() => removeMultiField(index, "certification")}
+                        className="h-8 gap-1 text-zinc-500 hover:text-red-500"
+                        variant="ghost"
+                      >
+                        <Trash2 />
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                  <div key={index} className="mb-5 mt-4">
+                    <Label>Certificate</Label>
                     <Input
                       type="text"
-                      placeholder="contoh: Web Developing"
-                      value={item.name}
+                      placeholder="Dicoding"
+                      value={item.certificate}
                       onChange={(e) =>
                         handleFormChange(
                           index,
-                          "name",
+                          "certificate",
                           e.target.value,
                           "certification"
                         )
                       }
                       className="mb-3 mt-1"
                     />
-                    <Textarea
-                      placeholder="contoh: Frontend Next js React js..."
-                      value={item.description}
-                      onChange={(e) =>
-                        handleFormChange(
-                          index,
-                          "description",
-                          e.target.value,
-                          "certification"
-                        )
-                      }
-                    />
-                    {certification.length > 1 && (
-                      <div className="w-full flex justify-end">
-                        <Button
-                          onClick={() =>
-                            removeMultiField(index, "certification")
-                          }
-                          className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
-                          variant="ghost"
-                        >
-                          <Trash2 />
-                          Remove
-                        </Button>
-                      </div>
-                    )}
+                    {/* {education.length > 1 && (
+                <div className="w-full flex justify-end">
+                  <Button
+                    onClick={() => removeMultiField(index, "education")}
+                    className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
+                    variant="ghost"
+                  >
+                    <Trash2 />
+                    Remove
+                  </Button>
+                </div>
+              )} */}
                   </div>
                 </>
               ))}
@@ -863,44 +1136,47 @@ export default function Edit() {
             <form>
               {award.map((item: any, index: any) => (
                 <>
-                  <Label>Award {index + 1}</Label>
-                  <div
-                    key={index}
-                    className="bg-zinc-100 border rounded p-2 mb-5 mt-1"
-                  >
+                  <div className="flex justify-between items-center">
+                    <Label className="font-bold">Award {index + 1}</Label>
+                    {award.length > 1 && (
+                      <Button
+                        onClick={() => removeMultiField(index, "award")}
+                        className="h-8 gap-1 text-zinc-500 hover:text-red-500"
+                        variant="ghost"
+                      >
+                        <Trash2 />
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                  <div key={index} className="mb-5 mt-4">
+                    <Label>Award</Label>
                     <Input
                       type="text"
-                      placeholder="contoh: Web Developing"
-                      value={item.name}
-                      onChange={(e) =>
-                        handleFormChange(index, "name", e.target.value, "award")
-                      }
-                      className="mb-3 mt-1"
-                    />
-                    <Textarea
-                      placeholder="contoh: Frontend Next js React js..."
-                      value={item.description}
+                      placeholder="Dicoding"
+                      value={item.award}
                       onChange={(e) =>
                         handleFormChange(
                           index,
-                          "description",
+                          "award",
                           e.target.value,
                           "award"
                         )
                       }
+                      className="mb-3 mt-1"
                     />
-                    {award.length > 1 && (
-                      <div className="w-full flex justify-end">
-                        <Button
-                          onClick={() => removeMultiField(index, "award")}
-                          className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
-                          variant="ghost"
-                        >
-                          <Trash2 />
-                          Remove
-                        </Button>
-                      </div>
-                    )}
+                    {/* {education.length > 1 && (
+              <div className="w-full flex justify-end">
+                <Button
+                  onClick={() => removeMultiField(index, "education")}
+                  className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
+                  variant="ghost"
+                >
+                  <Trash2 />
+                  Remove
+                </Button>
+              </div>
+            )} */}
                   </div>
                 </>
               ))}
@@ -919,49 +1195,60 @@ export default function Edit() {
             <form>
               {skills.map((item: any, index: any) => (
                 <>
-                  <Label>Skills {index + 1}</Label>
-                  <div
-                    key={index}
-                    className="bg-zinc-100 border rounded p-2 mb-5 mt-1"
-                  >
+                  <div className="flex justify-between items-center">
+                    <Label className="font-bold">Award {index + 1}</Label>
+                    {skills.length > 1 && (
+                      <Button
+                        onClick={() => removeMultiField(index, "skills")}
+                        className="h-8 gap-1 text-zinc-500 hover:text-red-500"
+                        variant="ghost"
+                      >
+                        <Trash2 />
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                  <div key={index} className="mb-5 mt-4">
+                    <Label>Skill</Label>
                     <Input
                       type="text"
-                      placeholder="contoh: Web Developing"
-                      value={item.name}
+                      placeholder="Web Developing"
+                      value={item.skill}
                       onChange={(e) =>
                         handleFormChange(
                           index,
-                          "name",
+                          "skill",
                           e.target.value,
                           "skills"
                         )
                       }
                       className="mb-3 mt-1"
                     />
+                    <Label>Detail</Label>
                     <Textarea
-                      placeholder="contoh: Frontend Next js React js..."
-                      value={item.description}
+                      placeholder="Skill detail"
+                      value={item.detail}
                       onChange={(e) =>
                         handleFormChange(
                           index,
-                          "description",
+                          "detail",
                           e.target.value,
                           "skills"
                         )
                       }
                     />
-                    {skills.length > 1 && (
-                      <div className="w-full flex justify-end">
-                        <Button
-                          onClick={() => removeMultiField(index, "skills")}
-                          className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
-                          variant="ghost"
-                        >
-                          <Trash2 />
-                          Remove
-                        </Button>
-                      </div>
-                    )}
+                    {/* {education.length > 1 && (
+            <div className="w-full flex justify-end">
+              <Button
+                onClick={() => removeMultiField(index, "education")}
+                className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
+                variant="ghost"
+              >
+                <Trash2 />
+                Remove
+              </Button>
+            </div>
+          )} */}
                   </div>
                 </>
               ))}
@@ -971,7 +1258,7 @@ export default function Edit() {
                 variant="ghost"
               >
                 <CopyPlus />
-                Add More Award
+                Add More Skills
               </Button>
             </form>
           )}
@@ -992,7 +1279,7 @@ export default function Edit() {
                     DownloadPDF(); // Then call DownloadPDF
                   }}
                 >
-                  Save CV!
+                  Save CV
                 </Button>
               </>
             )}
@@ -1096,7 +1383,12 @@ export default function Edit() {
                   skills={skills}
                 />
               ) : (
-                "Example"
+                <Image
+                  src="/template2.png"
+                  alt="example"
+                  width={3000}
+                  height={3000}
+                />
               )}
             </div>
           </div>
