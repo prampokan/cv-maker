@@ -8,7 +8,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { db, auth } from "@/lib/firebase/init";
-import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  addDoc,
+  collection,
+} from "firebase/firestore";
 import { useParams } from "next/navigation";
 import Template1 from "@/app/(cvTemplates)/template1";
 import {
@@ -24,6 +31,7 @@ import {
   ChevronLeft,
   Pen,
   Download,
+  Star,
 } from "lucide-react";
 import {
   Breadcrumb,
@@ -112,6 +120,9 @@ export default function Edit() {
   const { toast } = useToast();
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalReviewOpen, setIsModalReviewOpen] = useState(false);
+  const [review, setReview] = useState("");
+  const [stars, setStars] = useState<number | undefined>(undefined);
 
   const nextStep = () => {
     setStep((prevStep) => Math.min(prevStep + 1, 7));
@@ -186,8 +197,6 @@ export default function Edit() {
       console.log("No such document!");
     }
   };
-
-  console.log(templateName);
 
   const handleFormChange = (
     index: any,
@@ -344,6 +353,9 @@ export default function Edit() {
         title: "CV Saved Successfully",
         description: "You can continue edit it later.",
       });
+      setTimeout(() => {
+        setIsModalReviewOpen(true);
+      }, 1000);
     }
   };
 
@@ -363,6 +375,25 @@ export default function Edit() {
       router.push("/user");
     } catch (error) {
       console.error("error :", error);
+    }
+  };
+
+  const addReview = async () => {
+    try {
+      await addDoc(collection(db, "reviews"), {
+        name: user?.displayName,
+        email: user?.email,
+        profile_photo: user?.photoURL,
+        review: review,
+        stars: stars,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      toast({
+        title: "Thank you for your review",
+        description: "Your input helps us improve and serve you better! 🙌",
+      });
     }
   };
 
@@ -403,6 +434,20 @@ export default function Edit() {
       icon: <Brain size={16} />,
     },
   ];
+
+  const StarUI = [];
+  for (let i = 1; i <= 5; i++) {
+    StarUI.push(
+      <div
+        onClick={() => setStars(i)}
+        className={`cursor-pointer hover:text-yellow-500 transition-all duration-200 ${
+          stars && stars >= i ? "text-yellow-500" : "text-zinc-200"
+        }`}
+      >
+        <Star size="30" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-full justify-center py-24 px-5 2xl:px-0">
@@ -1267,6 +1312,35 @@ export default function Edit() {
                 >
                   Save CV
                 </Button>
+                <AlertDialog
+                  open={isModalReviewOpen}
+                  onOpenChange={setIsModalReviewOpen}
+                >
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="mb-1">
+                        ⭐ Give Us a Review!
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        <Label>Stars</Label>
+                        <div className="flex mb-4 mt-2">{StarUI}</div>
+                        <Label>Review</Label>
+                        <Textarea
+                          placeholder="This is the best CV Maker I've ever tried!"
+                          value={review}
+                          onChange={(e) => setReview(e.target.value)}
+                          className="mt-2"
+                        />
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Close</AlertDialogCancel>
+                      <AlertDialogAction onClick={addReview}>
+                        Done
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </>
             )}
           </div>

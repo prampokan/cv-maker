@@ -3,16 +3,16 @@ import Card from "../(components)/card";
 
 export default function Steps() {
   return (
-    <div className="w-full flex justify-center px-5 xl:px-0 pt-20">
+    <div className="w-full flex justify-center px-5 xl:px-0 py-20">
       <div className="w-[70rem]">
         <div className="flex flex-col items-center">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tighter mb-10 text-center bg-gradient-to-l from-zinc-900 to-zinc-300 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tighter text-center bg-gradient-to-l from-zinc-900 to-zinc-300 bg-clip-text text-transparent">
             From Template to Download in Just Minutes
           </h1>
-          {/* <p className="w-full sm:w-[40rem] text-center text-xl my-5 text-zinc-500 leading-relaxed">
+          <p className="w-full sm:w-[40rem] text-center text-xl my-5 text-zinc-500 leading-relaxed">
             Building a professional CV has never been easier. Follow these quick
             steps and get job-ready today.
-          </p> */}
+          </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-7">
           <Card
