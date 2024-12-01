@@ -112,7 +112,6 @@ export default function Edit() {
   const { toast } = useToast();
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [date, setDate] = React.useState<Date>();
 
   const nextStep = () => {
     setStep((prevStep) => Math.min(prevStep + 1, 7));
@@ -505,16 +504,6 @@ export default function Edit() {
                 <>
                   <div className="flex justify-between items-center">
                     <Label className="font-bold">Education {index + 1}</Label>
-                    {education.length > 1 && (
-                      <Button
-                        onClick={() => removeMultiField(index, "education")}
-                        className="h-8 gap-1 text-zinc-500 hover:text-red-500"
-                        variant="ghost"
-                      >
-                        <Trash2 />
-                        Remove
-                      </Button>
-                    )}
                   </div>
                   <div key={index} className="mb-5 mt-4">
                     <Label>University</Label>
@@ -577,7 +566,7 @@ export default function Edit() {
                       }
                       className="mb-3 mt-1"
                     />
-                    <div className="flex gap-2">
+                    <div className="flex flex-col 2xl:flex-row gap-2 items-start 2xl:items-center">
                       {/* Date Picker for Start Date */}
                       <div className="flex flex-col">
                         <Label>From</Label>
@@ -617,7 +606,6 @@ export default function Edit() {
                           </PopoverContent>
                         </Popover>
                       </div>
-
                       {/* Date Picker for End Date */}
                       <div className="flex flex-col">
                         <Label>To</Label>
@@ -631,7 +619,7 @@ export default function Edit() {
                               )}
                             >
                               <CalendarIcon />
-                              {item.end ? (
+                              {item.end && item.end !== "Present" ? (
                                 format(new Date(item.end), "PPP")
                               ) : (
                                 <span>Pick an End Date</span>
@@ -657,6 +645,18 @@ export default function Edit() {
                           </PopoverContent>
                         </Popover>
                       </div>
+                      <Button
+                        type="button"
+                        className={`mt-[5px] w-full ${
+                          item.end === "Present" ? "bg-zinc-100" : ""
+                        }`}
+                        variant="outline"
+                        onClick={() =>
+                          handleFormChange(index, "end", "Present", "education")
+                        }
+                      >
+                        Present
+                      </Button>
                     </div>
                     <Label>Description</Label>
                     <Textarea
@@ -671,7 +671,7 @@ export default function Edit() {
                         )
                       }
                     />
-                    {/* {education.length > 1 && (
+                    {education.length > 1 && (
                       <div className="w-full flex justify-end">
                         <Button
                           onClick={() => removeMultiField(index, "education")}
@@ -682,7 +682,7 @@ export default function Edit() {
                           Remove
                         </Button>
                       </div>
-                    )} */}
+                    )}
                   </div>
                 </>
               ))}
@@ -705,18 +705,6 @@ export default function Edit() {
                     <Label className="font-bold">
                       Work Experience {index + 1}
                     </Label>
-                    {workExperience.length > 1 && (
-                      <Button
-                        onClick={() =>
-                          removeMultiField(index, "work-experience")
-                        }
-                        className="h-8 gap-1 text-zinc-500 hover:text-red-500"
-                        variant="ghost"
-                      >
-                        <Trash2 />
-                        Remove
-                      </Button>
-                    )}
                   </div>
                   <div key={index} className="mb-5 mt-4">
                     <Label>Company</Label>
@@ -764,7 +752,7 @@ export default function Edit() {
                       }
                       className="mb-3 mt-1"
                     />
-                    <div className="flex gap-2">
+                    <div className="flex flex-col 2xl:flex-row gap-2 items-start 2xl:items-center">
                       {/* Date Picker for Start Date */}
                       <div className="flex flex-col">
                         <Label>From</Label>
@@ -818,7 +806,7 @@ export default function Edit() {
                               )}
                             >
                               <CalendarIcon />
-                              {item.end ? (
+                              {item.end && item.end !== "Present" ? (
                                 format(new Date(item.end), "PPP")
                               ) : (
                                 <span>Pick an End Date</span>
@@ -844,6 +832,23 @@ export default function Edit() {
                           </PopoverContent>
                         </Popover>
                       </div>
+                      <Button
+                        type="button"
+                        className={`mt-[5px] w-full ${
+                          item.end === "Present" ? "bg-zinc-100" : ""
+                        }`}
+                        variant="outline"
+                        onClick={() =>
+                          handleFormChange(
+                            index,
+                            "end",
+                            "Present",
+                            "work-experience"
+                          )
+                        }
+                      >
+                        Present
+                      </Button>
                     </div>
                     <Label>Description</Label>
                     <Textarea
@@ -858,18 +863,20 @@ export default function Edit() {
                         )
                       }
                     />
-                    {/* {education.length > 1 && (
-                    <div className="w-full flex justify-end">
-                      <Button
-                        onClick={() => removeMultiField(index, "education")}
-                        className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
-                        variant="ghost"
-                      >
-                        <Trash2 />
-                        Remove
-                      </Button>
-                    </div>
-                  )} */}
+                    {workExperience.length > 1 && (
+                      <div className="w-full flex justify-end">
+                        <Button
+                          onClick={() =>
+                            removeMultiField(index, "work-experience")
+                          }
+                          className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
+                          variant="ghost"
+                        >
+                          <Trash2 />
+                          Remove
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </>
               ))}
@@ -892,18 +899,6 @@ export default function Edit() {
                     <Label className="font-bold">
                       Related Experience {index + 1}
                     </Label>
-                    {relatedExperience.length > 1 && (
-                      <Button
-                        onClick={() =>
-                          removeMultiField(index, "related-experience")
-                        }
-                        className="h-8 gap-1 text-zinc-500 hover:text-red-500"
-                        variant="ghost"
-                      >
-                        <Trash2 />
-                        Remove
-                      </Button>
-                    )}
                   </div>
                   <div key={index} className="mb-5 mt-4">
                     <Label>Company</Label>
@@ -951,7 +946,7 @@ export default function Edit() {
                       }
                       className="mb-3 mt-1"
                     />
-                    <div className="flex gap-2">
+                    <div className="flex flex-col 2xl:flex-row gap-2 items-start 2xl:items-center">
                       {/* Date Picker for Start Date */}
                       <div className="flex flex-col">
                         <Label>From</Label>
@@ -1005,7 +1000,7 @@ export default function Edit() {
                               )}
                             >
                               <CalendarIcon />
-                              {item.end ? (
+                              {item.end && item.end !== "Present" ? (
                                 format(new Date(item.end), "PPP")
                               ) : (
                                 <span>Pick an End Date</span>
@@ -1031,6 +1026,23 @@ export default function Edit() {
                           </PopoverContent>
                         </Popover>
                       </div>
+                      <Button
+                        type="button"
+                        className={`mt-[5px] w-full ${
+                          item.end === "Present" ? "bg-zinc-100" : ""
+                        }`}
+                        variant="outline"
+                        onClick={() =>
+                          handleFormChange(
+                            index,
+                            "end",
+                            "Present",
+                            "related-experience"
+                          )
+                        }
+                      >
+                        Present
+                      </Button>
                     </div>
                     <Label>Description</Label>
                     <Textarea
@@ -1045,18 +1057,20 @@ export default function Edit() {
                         )
                       }
                     />
-                    {/* {education.length > 1 && (
-                  <div className="w-full flex justify-end">
-                    <Button
-                      onClick={() => removeMultiField(index, "education")}
-                      className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
-                      variant="ghost"
-                    >
-                      <Trash2 />
-                      Remove
-                    </Button>
-                  </div>
-                )} */}
+                    {relatedExperience.length > 1 && (
+                      <div className="w-full flex justify-end">
+                        <Button
+                          onClick={() =>
+                            removeMultiField(index, "related-experience")
+                          }
+                          className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
+                          variant="ghost"
+                        >
+                          <Trash2 />
+                          Remove
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </>
               ))}
@@ -1079,16 +1093,6 @@ export default function Edit() {
                     <Label className="font-bold">
                       Certification {index + 1}
                     </Label>
-                    {certification.length > 1 && (
-                      <Button
-                        onClick={() => removeMultiField(index, "certification")}
-                        className="h-8 gap-1 text-zinc-500 hover:text-red-500"
-                        variant="ghost"
-                      >
-                        <Trash2 />
-                        Remove
-                      </Button>
-                    )}
                   </div>
                   <div key={index} className="mb-5 mt-4">
                     <Label>Certificate</Label>
@@ -1106,18 +1110,20 @@ export default function Edit() {
                       }
                       className="mb-3 mt-1"
                     />
-                    {/* {education.length > 1 && (
-                <div className="w-full flex justify-end">
-                  <Button
-                    onClick={() => removeMultiField(index, "education")}
-                    className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
-                    variant="ghost"
-                  >
-                    <Trash2 />
-                    Remove
-                  </Button>
-                </div>
-              )} */}
+                    {certification.length > 1 && (
+                      <div className="w-full flex justify-end">
+                        <Button
+                          onClick={() =>
+                            removeMultiField(index, "certification")
+                          }
+                          className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
+                          variant="ghost"
+                        >
+                          <Trash2 />
+                          Remove
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </>
               ))}
@@ -1138,16 +1144,6 @@ export default function Edit() {
                 <>
                   <div className="flex justify-between items-center">
                     <Label className="font-bold">Award {index + 1}</Label>
-                    {award.length > 1 && (
-                      <Button
-                        onClick={() => removeMultiField(index, "award")}
-                        className="h-8 gap-1 text-zinc-500 hover:text-red-500"
-                        variant="ghost"
-                      >
-                        <Trash2 />
-                        Remove
-                      </Button>
-                    )}
                   </div>
                   <div key={index} className="mb-5 mt-4">
                     <Label>Award</Label>
@@ -1165,18 +1161,18 @@ export default function Edit() {
                       }
                       className="mb-3 mt-1"
                     />
-                    {/* {education.length > 1 && (
-              <div className="w-full flex justify-end">
-                <Button
-                  onClick={() => removeMultiField(index, "education")}
-                  className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
-                  variant="ghost"
-                >
-                  <Trash2 />
-                  Remove
-                </Button>
-              </div>
-            )} */}
+                    {award.length > 1 && (
+                      <div className="w-full flex justify-end">
+                        <Button
+                          onClick={() => removeMultiField(index, "award")}
+                          className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
+                          variant="ghost"
+                        >
+                          <Trash2 />
+                          Remove
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </>
               ))}
@@ -1197,16 +1193,6 @@ export default function Edit() {
                 <>
                   <div className="flex justify-between items-center">
                     <Label className="font-bold">Award {index + 1}</Label>
-                    {skills.length > 1 && (
-                      <Button
-                        onClick={() => removeMultiField(index, "skills")}
-                        className="h-8 gap-1 text-zinc-500 hover:text-red-500"
-                        variant="ghost"
-                      >
-                        <Trash2 />
-                        Remove
-                      </Button>
-                    )}
                   </div>
                   <div key={index} className="mb-5 mt-4">
                     <Label>Skill</Label>
@@ -1237,18 +1223,18 @@ export default function Edit() {
                         )
                       }
                     />
-                    {/* {education.length > 1 && (
-            <div className="w-full flex justify-end">
-              <Button
-                onClick={() => removeMultiField(index, "education")}
-                className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
-                variant="ghost"
-              >
-                <Trash2 />
-                Remove
-              </Button>
-            </div>
-          )} */}
+                    {skills.length > 1 && (
+                      <div className="w-full flex justify-end">
+                        <Button
+                          onClick={() => removeMultiField(index, "skills")}
+                          className="h-8 mt-2 gap-1 text-zinc-500 hover:text-red-500"
+                          variant="ghost"
+                        >
+                          <Trash2 />
+                          Remove
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </>
               ))}
@@ -1275,8 +1261,8 @@ export default function Edit() {
               <>
                 <Button
                   onClick={async (e) => {
-                    await updateOrder(e); // Wait for updateOrder to complete if it returns a Promise
-                    DownloadPDF(); // Then call DownloadPDF
+                    await updateOrder(e);
+                    DownloadPDF();
                   }}
                 >
                   Save CV
@@ -1384,7 +1370,7 @@ export default function Edit() {
                 />
               ) : (
                 <Image
-                  src="/template2.png"
+                  src="/template1.png"
                   alt="example"
                   width={3000}
                   height={3000}

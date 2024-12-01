@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Safari from "@/components/ui/safari";
 
 export default function Video() {
   return (
@@ -8,6 +9,7 @@ export default function Video() {
           <video autoPlay loop muted>
             <source src="/video.mp4" type="video/mp4" />
           </video>
+          <Safari url="cvmakerindo.com" className="size-full" />
         </div>
       </div>
     </div>

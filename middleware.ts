@@ -10,6 +10,11 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  if (token && url.pathname === "/") {
+    url.pathname = "/user";
+    return NextResponse.redirect(url);
+  }
+
   return NextResponse.next();
 }
 

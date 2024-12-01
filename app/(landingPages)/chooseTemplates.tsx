@@ -93,7 +93,7 @@ export default function ChooseTemplates() {
       <div className="w-[70rem] h-full">
         <div className="flex flex-col items-center">
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tighter text-center bg-gradient-to-l from-zinc-900 to-zinc-300 bg-clip-text text-transparent">
-            Choose Your Perfect Template
+            Choose Your Template
           </h1>
           <p className="w-full sm:w-[40rem] text-center text-xl my-5 text-zinc-500 leading-relaxed">
             Select from a variety of modern, eye-catching templates that
@@ -104,7 +104,7 @@ export default function ChooseTemplates() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-5">
           <div
             onClick={() => ChooseTemplate("Template 1")}
-            className="border rounded-lg h-full w-full overflow-hidden cursor-pointer hover:shadow-xl transition-all relative flex justify-center items-center group"
+            className="border h-full w-full overflow-hidden cursor-pointer hover:shadow-xl transition-all relative flex justify-center items-center group"
           >
             <Image
               src="/template1.png"
@@ -117,7 +117,7 @@ export default function ChooseTemplates() {
               Use this template
             </Button>
           </div>
-          <div className="border rounded-lg h-full flex justify-center items-center font-medium text-zinc-500 font-mono">
+          <div className="border h-full flex justify-center items-center font-medium text-zinc-500 font-mono">
             More to come...
           </div>
         </div>

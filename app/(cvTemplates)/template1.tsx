@@ -66,10 +66,13 @@ export default function Template1({
               <p className="font-bold capitalize">{item.location}</p>
             </div>
             <div className="flex justify-between">
-              <p className="text-zinc-600 italic">{item.degree}</p>
+              <div className="flex items-center gap-1">
+                <p className="text-zinc-600 italic">{item.degree}</p>
+                {item.gpa && <p className="text-zinc-600">/ GPA: {item.gpa}</p>}
+              </div>
               {item.start && (
                 <p className="text-zinc-600 italic">
-                  {item.start && item.end
+                  {item.start && item.end && item.end !== "Present"
                     ? `${new Intl.DateTimeFormat("en-US", {
                         year: "numeric",
                         month: "long",
@@ -79,6 +82,11 @@ export default function Template1({
                         year: "numeric",
                         month: "long",
                       }).format(new Date(item.end))}`
+                    : item.start && item.end === "Present"
+                    ? `${new Intl.DateTimeFormat("en-US", {
+                        year: "numeric",
+                        month: "long",
+                      }).format(new Date(item.start))} - Present`
                     : "Invalid date"}
                 </p>
               )}
@@ -103,7 +111,7 @@ export default function Template1({
               <p className="text-zinc-600 italic">{item.jobField}</p>
               {item.start && (
                 <p className="text-zinc-600 italic">
-                  {item.start && item.end
+                  {item.start && item.end && item.end !== "Present"
                     ? `${new Intl.DateTimeFormat("en-US", {
                         year: "numeric",
                         month: "long",
@@ -113,6 +121,11 @@ export default function Template1({
                         year: "numeric",
                         month: "long",
                       }).format(new Date(item.end))}`
+                    : item.start && item.end === "Present"
+                    ? `${new Intl.DateTimeFormat("en-US", {
+                        year: "numeric",
+                        month: "long",
+                      }).format(new Date(item.start))} - Present`
                     : "Invalid date"}
                 </p>
               )}
@@ -137,7 +150,7 @@ export default function Template1({
               <p className="text-zinc-600 italic">{item.field}</p>
               {item.start && (
                 <p className="text-zinc-600 italic">
-                  {item.start && item.end
+                  {item.start && item.end && item.end !== "Present"
                     ? `${new Intl.DateTimeFormat("en-US", {
                         year: "numeric",
                         month: "long",
@@ -147,6 +160,11 @@ export default function Template1({
                         year: "numeric",
                         month: "long",
                       }).format(new Date(item.end))}`
+                    : item.start && item.end === "Present"
+                    ? `${new Intl.DateTimeFormat("en-US", {
+                        year: "numeric",
+                        month: "long",
+                      }).format(new Date(item.start))} - Present`
                     : "Invalid date"}
                 </p>
               )}
@@ -161,7 +179,7 @@ export default function Template1({
             Certification
           </h1>
         )}
-        {certification &&
+        {certification[0].certificate &&
           certification.map((item, i) => (
             <div key={i}>
               <li className="">{item.certificate}</li>
@@ -174,7 +192,7 @@ export default function Template1({
             Award
           </h1>
         )}
-        {award &&
+        {award[0].award &&
           award.map((item, i) => (
             <div key={i}>
               <li className="">{item.award}</li>
@@ -187,7 +205,7 @@ export default function Template1({
             Skills
           </h1>
         )}
-        {skills &&
+        {skills[0].skill &&
           skills.map((item, i) => (
             <div key={i} className="flex items-center">
               <p className="font-bold capitalize">{item.skill} :</p>

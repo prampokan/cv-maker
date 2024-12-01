@@ -159,11 +159,11 @@ export default function Page() {
                 Choose your template.
               </DrawerDescription>
             </DrawerHeader>
-            <div
-              className="flex justify-center gap-4"
-              onClick={() => ChooseTemplate("Template 1")}
-            >
-              <div className="h-auto w-auto overflow-hidden cursor-pointer transition-all relative flex justify-center items-center group border">
+            <div className="flex justify-center gap-4">
+              <div
+                onClick={() => ChooseTemplate("Template 1")}
+                className="h-auto w-auto overflow-hidden cursor-pointer transition-all relative flex justify-center items-center group border"
+              >
                 <Image
                   src="/template1.png"
                   alt="template1"

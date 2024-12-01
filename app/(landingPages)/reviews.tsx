@@ -80,7 +80,7 @@ const ReviewCard = ({
 
 export function Reviews() {
   return (
-    <div className="w-full flex justify-center py-32">
+    <div className="w-full flex justify-center py-20">
       <div className="w-full 2xl:w-[95rem]">
         <h1 className="uppercase text-sm font-semibold text-zinc-500 tracking-[3px] text-center mb-5">
           Real Stories from People Who Landed Their Dream Jobs
