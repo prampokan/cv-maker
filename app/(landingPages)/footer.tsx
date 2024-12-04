@@ -16,7 +16,7 @@ export default function Footer() {
         <p className="text-zinc-500 mt-8">
           © 2024 CV Maker Indo. All Rights Reserved.
         </p>
-        <p className="text-zinc-500 text-sm mt-5">
+        <p className="text-zinc-300 text-sm mt-5">
           Built with ♡ by Pramudya Diagusta
         </p>
       </div>
