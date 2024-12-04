@@ -30,7 +30,7 @@ export function Reviews() {
   return (
     <div className="w-full flex justify-center pt-20 pb-32">
       <div className="w-full 2xl:w-[95rem]">
-        <h1 className="uppercase text-sm font-semibold text-zinc-500 tracking-[3px] text-center mb-5">
+        <h1 className="uppercase text-xs sm:text-sm font-semibold text-zinc-500 tracking-[3px] text-center mb-5 px-5 sm:px-0">
           Real Stories from People Who Landed Their Dream Jobs
         </h1>
         <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden">

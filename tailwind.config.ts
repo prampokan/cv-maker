@@ -77,7 +77,8 @@ const config: Config = {
   		animation: {
   			rainbow: 'rainbow var(--speed, 2s) infinite linear',
   			marquee: 'marquee var(--duration) infinite linear',
-  			'marquee-vertical': 'marquee-vertical var(--duration) linear infinite'
+  			'marquee-vertical': 'marquee-vertical var(--duration) linear infinite',
+  			ripple: 'ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite'
   		},
   		keyframes: {
   			rainbow: {
@@ -102,6 +103,14 @@ const config: Config = {
   				},
   				to: {
   					transform: 'translateY(calc(-100% - var(--gap)))'
+  				}
+  			},
+  			ripple: {
+  				'0%, 100%': {
+  					transform: 'translate(-50%, -50%) scale(1)'
+  				},
+  				'50%': {
+  					transform: 'translate(-50%, -50%) scale(0.9)'
   				}
   			}
   		}

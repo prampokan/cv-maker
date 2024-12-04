@@ -14,7 +14,7 @@ import {
   UserRoundPen,
   LogOut,
   LogIn,
-  FileUser,
+  FileCode2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,15 +37,14 @@ export default function Navbar() {
   return (
     <nav className="w-full flex justify-center items-center h-20 border-b bg-white/70 backdrop-blur fixed px-5 2xl:px-0 z-50">
       <div className="w-[90rem] flex justify-between items-center">
-        <div>
-          <h1 className="font-semibold tracking-tight text-zinc-800 flex gap-2">
-            cvmakerindo.com
-          </h1>
-        </div>
+        <h1 className="font-bold tracking-tight text-zinc-600 flex gap-2 items-center">
+          <FileCode2 />
+          CV Maker Indo.
+        </h1>
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="flex items-center cursor-pointer bg-zinc-50 hover:bg-zinc-100 transition-all border p-2 rounded-md gap-2">
+              <div className="flex items-center cursor-pointer bg-zinc-50 hover:bg-zinc-100 transition-all border p-2 rounded-md gap-0 sm:gap-2">
                 <Image
                   src={user.photoURL || "/shadcn.jpg"}
                   alt="shadcn"
@@ -53,13 +52,13 @@ export default function Navbar() {
                   height={35}
                   className="rounded-lg"
                 />
-                <div>
+                <div className="hidden sm:block">
                   <h1 className="font-semibold text-sm tracking-tight">
                     {user.displayName}
                   </h1>
                   <p className="text-xs">{user.email}</p>
                 </div>
-                <ChevronsUpDown className="ml-3" size={16} />
+                <ChevronsUpDown className="ml-2 sm:ml-3" size={16} />
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -111,9 +110,9 @@ export default function Navbar() {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : loading ? (
-          <div className="flex items-center bg-zinc-50 transition-all border p-2 rounded-md gap-2 h-[53px] w-52 animate-pulse">
+          <div className="flex items-center bg-zinc-50 transition-all border p-2 rounded-md gap-2 h-[53px] w-[63px] sm:w-52 animate-pulse">
             <div className="h-8 w-8 bg-zinc-200 rounded-lg"></div>
-            <div className="flex flex-col gap-2">
+            <div className="sm:flex flex-col gap-2 hidden">
               <div className="w-24 h-3 bg-zinc-200 rounded-lg"></div>
               <div className="w-32 h-2 bg-zinc-200 rounded-lg"></div>
             </div>
@@ -121,7 +120,8 @@ export default function Navbar() {
         ) : (
           <Button className="font-bold" variant="outline" onClick={SignIn}>
             <LogIn />
-            Sign in to make CV
+            <span className="hidden sm:block">Sign in to make CV</span>
+            <span className="sm:hidden">Sign in</span>
           </Button>
         )}
       </div>
