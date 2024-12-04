@@ -92,7 +92,7 @@ export default function ChooseTemplates() {
       id="templates"
     >
       <div className="w-[70rem] h-full">
-        <h1 className="font-noto text-2xl font-bold text-zinc-600 mb-20 text-center">
+        <h1 className="font-noto text-2xl font-bold text-zinc-600 mb-10 text-center">
           ✨Choose Your Template
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-10 mt-5">
