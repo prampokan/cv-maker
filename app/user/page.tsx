@@ -16,7 +16,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, Pen, Trash2 } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -27,6 +27,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { FilePlus2 } from "lucide-react";
 
 export default function Page() {
   const [orders, setOrders] = useState<any>([]);
@@ -172,6 +173,7 @@ export default function Page() {
                   className="transition-opacity duration-300 group-hover:opacity-70"
                 />
                 <Button className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <FilePlus2 />
                   Use this template
                 </Button>
               </div>
@@ -202,6 +204,7 @@ export default function Page() {
                   className="transition-opacity group-hover:opacity-70"
                 />
                 <Button className="absolute opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Pen />
                   Continue edit
                 </Button>
               </Link>

@@ -7,6 +7,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { FilePlus2 } from "lucide-react";
 
 export default function ChooseTemplates() {
   const googleAuth = new GoogleAuthProvider();
@@ -104,7 +105,7 @@ export default function ChooseTemplates() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-5">
           <div
             onClick={() => ChooseTemplate("Template 1")}
-            className="border h-full w-full overflow-hidden cursor-pointer hover:shadow-xl transition-all relative flex justify-center items-center group"
+            className="border h-full w-full rounded-lg overflow-hidden cursor-pointer hover:shadow-xl transition-all relative flex justify-center items-center group"
           >
             <Image
               src="/template1.png"
@@ -114,10 +115,11 @@ export default function ChooseTemplates() {
               className="transition-opacity duration-300 group-hover:opacity-70"
             />
             <Button className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <FilePlus2 />
               Use this template
             </Button>
           </div>
-          <div className="border h-full flex justify-center items-center font-medium text-zinc-500 font-mono">
+          <div className="border h-full rounded-lg flex justify-center items-center font-medium text-zinc-500 font-mono">
             More to come...
           </div>
         </div>
